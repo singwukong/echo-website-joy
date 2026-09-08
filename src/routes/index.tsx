@@ -146,6 +146,18 @@ function Stat({ label, value }: { label: string; value: string }) {
 function Index() {
   const pair = useTape();
   const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (document.getElementById("twitter-wjs")) {
+      (window as unknown as { twttr?: { widgets?: { load?: () => void } } }).twttr?.widgets?.load?.();
+      return;
+    }
+    const s = document.createElement("script");
+    s.id = "twitter-wjs";
+    s.src = "https://platform.twitter.com/widgets.js";
+    s.async = true;
+    document.body.appendChild(s);
+  }, []);
+
   const change = pair?.priceChange?.h24;
   const trades =
     pair?.txns?.h24 ? (pair.txns.h24.buys ?? 0) + (pair.txns.h24.sells ?? 0) : undefined;
